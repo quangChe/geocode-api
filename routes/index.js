@@ -1,8 +1,13 @@
 const router = require('express').Router();
-const google = require('../controllers/google-api');
+const { textQuery } = require('../controllers/parse-query');
+const { 
+  getGeocode, 
+  reverseGeocode, 
+  geocodesDistance,
+} = require('../controllers/google-api');
 
-router.get('/geocode/get', google.getGeoCode);
-router.get('/geocode/reverse', google.reverseGeoCode);
-router.get('/geocode/distance', google.getDistance);
+router.get('/geocode/get', textQuery, getGeocode);
+router.get('/geocode/reverse', reverseGeocode);
+router.get('/geocode/distance', geocodesDistance);
 
 module.exports = router;
