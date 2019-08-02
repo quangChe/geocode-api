@@ -1,8 +1,8 @@
 const env = require('dotenv').config();
 const morgan = require('morgan');
-const router = require('./routes');
 const express = require('express');
-
+const routeHandler = require('./routes');
+const errorHandler = require('./controllers/error-handler');
 const app = express();
 
 const headers = (req, res, next) => {
@@ -16,8 +16,8 @@ app.use(headers);
 app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
 
 
-app.use('/', router);
-app.use('*', (req, res) => res.status(400).send('Bad Request'));
+app.use('/', routeHandler);
+app.use(errorHandler);
 
 app.listen(9000, process.env.HOSTNAME, () => {
   console.log('Server is listening on port 9000')
