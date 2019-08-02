@@ -18,12 +18,24 @@ module.exports = {
 
       res.status(200).send(geocodeData);
     } catch(err) {
-      console.error(err);
+      next(err);
     }   
   },
 
-  reverseGeocode: (req, res, next) => {
-    // const 
+  reverseGeocode: async (req, res, next) => {
+    try {
+      const response = await axios.get('/geocode/json', {
+        params: { 
+          latlng: req.query.geocode, 
+        }
+      });
+      res.status(200).send(response.data);
+    } catch (err) {
+      console.log(err, '??#');
+      next(err);
+    }
+
+    res.status(200).send()
   },
   geocodesDistance: (req, res, next) => {
     res.status(200).send('DISTANCE');
