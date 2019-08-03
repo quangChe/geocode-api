@@ -29,15 +29,28 @@ module.exports = {
           latlng: req.query.geocode, 
         }
       });
-      res.status(200).send(response.data);
+      res.status(200).send(response.data.results[0]);
     } catch (err) {
-      console.log(err, '??#');
       next(err);
     }
-
-    res.status(200).send()
   },
   geocodesDistance: (req, res, next) => {
-    res.status(200).send('DISTANCE');
+    try {
+      const { p1, p2 } = req.query;
+      const rad = (x) => x * Math.PI / 180;
+      const R = 6378137;
+      const dLat = rad(p2.lat - p1.lat);
+      const dLng = rad(p2.lng - p2.lng);
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.sin(dLng/2)
+        * Math.sin(dLng/2) * Math.cos(p1.lat) * Math.cos(p2.lat);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const d = R * c;
+      const data = {
+        "meters": d,
+      }
+      res.status(200).send(data);
+    } catch (err) {
+      next(err);
+    }
   }
 }
