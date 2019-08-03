@@ -2,7 +2,6 @@ const env = require('dotenv').config();
 const morgan = require('morgan');
 const express = require('express');
 const routeHandler = require('./routes');
-const errorHandler = require('./controllers/error-handler');
 const app = express();
 
 const headers = (req, res, next) => {
@@ -12,11 +11,12 @@ const headers = (req, res, next) => {
   next();
 }
 
+const errorHandler = (error, req, res, next) =>
+  res.status(500).send(error.message || 'Unexpected error!');
+
 app.use(headers);
 app.use(morgan(':method :url :status :response-time ms - :res[content-length]'));
-
-
-app.use('/', routeHandler);
+app.use(routeHandler);
 app.use(errorHandler);
 
 app.listen(9000, process.env.HOSTNAME, () => {
